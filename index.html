@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Accueil - ChatHub</title>
+  <link rel="stylesheet" href="../../assets/css/index.css" />
+</head>
+<body>
+  <header>
+    <h1>Bienvenue sur ChatHub</h1>
+  </header>
+
+  <main>
+    <p class="welcome-msg">Votre réseau social interne. Connectez-vous ou créez un compte pour commencer à chatter !</p>
+    <nav>
+      <ul>
+        <li><a href="vues/clients/login.html">Se connecter</a></li>
+        <li><a href="vues/clients/register.html">Créer un compte</a></li>
+        <li><a href="vues/clients/home.html">Accueil (après connexion)</a></li>
+        <li><a href="vues/clients/profile.html">Mon profil</a></li>
+        <li><a href="vues/clients/chat.html">Chat</a></li>
+        <li><a href="vues/clients/friends.html">Amis</a></li>
+      </ul>
+    </nav>
+  </main>
+
+  <footer>
+    <p>© 2025 ChatHub - Tous droits réservés</p>
+  </footer>
+
+  <script>
+    // Exemple simple : si user connecté (stocké en sessionStorage), rediriger vers home.html
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = sessionStorage.getItem('user');
+      if (user) {
+        // window.location.href = "vues/clients/home.html"; // active si tu veux rediriger automatiquement
+      }
+    });
+  </script>
+</body>
+</html>
