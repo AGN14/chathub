@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gestion des Rôles - Chathub Admin</title>
+  <link rel="stylesheet" href="../../assets/css/admin.css" />
+</head>
+<body>
+  <aside class="sidebar">
+    <h2>Chathub Admin</h2>
+    <nav>
+      <ul>
+        <li><a href="dashboard.html">Tableau de bord</a></li>
+        <li><a href="users.html">Utilisateurs</a></li>
+        <li><a href="posts.html">Posts</a></li>
+        <li><a href="roles.html" class="active">Rôles</a></li>
+        <li><a href="#" id="logoutBtn">Déconnexion</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <header>
+      <h1>Gestion des Rôles</h1>
+    </header>
+
+    <section>
+      <form id="roleForm">
+        <input type="hidden" name="role_id" id="role_id" />
+        <input type="text" name="role_name" id="role_name" placeholder="Nom du rôle" required />
+        <button type="submit" id="submitBtn">Ajouter</button>
+        <button type="button" id="cancelBtn" style="display:none;">Annuler</button>
+      </form>
+
+      <table id="rolesTable" border="1" cellpadding="10" cellspacing="0" style="width:100%; margin-top:20px; border-collapse: collapse;">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nom du rôle</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Rôles chargés dynamiquement -->
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const rolesTableBody = document.querySelector('#rolesTable tbody');
+      const roleForm = document.getElementById('roleForm');
+      const roleIdInput = document.getElementById('role_id');
+      const roleNameInput = document.getElementById('role_name');
+      const submitBtn = document.getElementById('submitBtn');
+      const cancelBtn = document.getElementById('cancelBtn');
+
+      // Charger les rôles
+      function loadRoles() {
+        fetch('../../api/admin/get_roles.php')
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              rolesTableBody.innerHTML = '';
+              data.roles.forEach(role => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                  <td>${role.id}</td>
+                  <td>${role.name}</td>
+                  <td>
+                    <button data-id="${role.id}" data-name="${role.name}" class="editBtn">Modifier</button>
+                    <button data-id="${role.id}" class="deleteBtn">Supprimer</button>
+                  </td>
+                `;
+                rolesTableBody.appendChild(tr);
+              });
+              attachEventListeners();
+            } else {
+              rolesTableBody.innerHTML = '<tr><td colspan="3">Erreur lors du chargement des rôles</td></tr>';
+            }
+          })
+          .catch(() => {
+            rolesTableBody.innerHTML = '<tr><td colspan="3">Erreur réseau</td></tr>';
+          });
+      }
+
+      // Événements sur boutons Modifier / Supprimer
+      function attachEventListeners() {
+        document.querySelectorAll('.editBtn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            roleIdInput.value = btn.dataset.id;
+            roleNameInput.value = btn.dataset.name;
+            submitBtn.textContent = 'Modifier';
+            cancelBtn.style.display = 'inline-block';
+          });
+        });
+
+        document.querySelectorAll('.deleteBtn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            if (confirm('Voulez-vous vraiment supprimer ce rôle ?')) {
+              const roleId = btn.dataset.id;
+              fetch('../../api/admin/delete_role.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ role_id: roleId })
+              })
+                .then(res => res.json())
+                .then(result => {
+                  if (result.success) {
+                    alert('Rôle supprimé avec succès');
+                    loadRoles();
+                    resetForm();
+                  } else {
+                    alert('Erreur : ' + result.error);
+                  }
+                });
+            }
+          });
+        });
+      }
+
+      // Réinitialiser formulaire
+      function resetForm() {
+        roleIdInput.value = '';
+        roleNameInput.value = '';
+        submitBtn.textContent = 'Ajouter';
+        cancelBtn.style.display = 'none';
+      }
+
+      cancelBtn.addEventListener('click', resetForm);
+
+      // Soumission formulaire ajout/modification
+      roleForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const payload = {
+          role_id: roleIdInput.value || null,
+          name: roleNameInput.value.trim()
+        };
+
+        let url = payload.role_id ? '../../api/admin/update_role.php' : '../../api/admin/create_role.php';
+
+        fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        })
+          .then(res => res.json())
+          .then(result => {
+            if (result.success) {
+              alert(result.message || 'Opération réussie');
+              loadRoles();
+              resetForm();
+            } else {
+              alert('Erreur : ' + result.error);
+            }
+          });
+      });
+
+      // Déconnexion
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        fetch('../../api/auth/logout.php')
+          .then(() => window.location.href = 'admin-login.html');
+      });
+
+      loadRoles();
+    });
+  </script>
+</body>
+</html>

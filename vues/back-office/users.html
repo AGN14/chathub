@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gestion des Utilisateurs - Chathub Admin</title>
+  <link rel="stylesheet" href="../../assets/css/admin.css" />
+</head>
+<body>
+  <aside class="sidebar">
+    <h2>Chathub Admin</h2>
+    <nav>
+      <ul>
+        <li><a href="dashboard.html">Tableau de bord</a></li>
+        <li><a href="users.html" class="active">Utilisateurs</a></li>
+        <li><a href="posts.html">Posts</a></li>
+        <li><a href="roles.html">Rôles</a></li>
+        <li><a href="#" id="logoutBtn">Déconnexion</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <header>
+      <h1>Gestion des Utilisateurs</h1>
+    </header>
+
+    <section>
+      <table id="usersTable" border="1" cellpadding="10" cellspacing="0" style="width:100%; border-collapse: collapse;">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nom complet</th>
+            <th>Email</th>
+            <th>Avatar</th>
+            <th>Rôle</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Utilisateurs chargés dynamiquement -->
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const usersTableBody = document.querySelector('#usersTable tbody');
+
+      function loadUsers() {
+        fetch('../../api/admin/get_users.php')
+          .then(res => res.json())
+          .then(data => {
+            if(data.success){
+              usersTableBody.innerHTML = '';
+              data.users.forEach(user => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                  <td>${user.id}</td>
+                  <td>${user.first_name} ${user.last_name}</td>
+                  <td>${user.email}</td>
+                  <td><img src="../../uploads/avatars/${user.avatar}" alt="Avatar" width="40" style="border-radius:50%;"></td>
+                  <td>
+                    <select class="roleSelect" data-userid="${user.id}">
+                      ${data.roles.map(role => 
+                        `<option value="${role.id}" ${role.id === user.role_id ? 'selected' : ''}>${role.name}</option>`
+                      ).join('')}
+                    </select>
+                  </td>
+                  <td>
+                    <button class="deleteBtn" data-userid="${user.id}">Supprimer</button>
+                  </td>
+                `;
+                usersTableBody.appendChild(tr);
+              });
+
+              attachEvents();
+            } else {
+              usersTableBody.innerHTML = '<tr><td colspan="6">Erreur lors du chargement des utilisateurs</td></tr>';
+            }
+          })
+          .catch(() => {
+            usersTableBody.innerHTML = '<tr><td colspan="6">Erreur réseau</td></tr>';
+          });
+      }
+
+      function attachEvents() {
+        // Changer rôle
+        document.querySelectorAll('.roleSelect').forEach(select => {
+          select.addEventListener('change', () => {
+            const userId = select.dataset.userid;
+            const roleId = select.value;
+
+            fetch('../../api/admin/update_roles.php', {
+              method: 'POST',
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify({user_id: userId, role_id: roleId})
+            })
+            .then(res => res.json())
+            .then(result => {
+              if(result.success){
+                alert('Rôle mis à jour');
+              } else {
+                alert('Erreur : ' + result.error);
+              }
+            });
+          });
+        });
+
+        // Supprimer utilisateur
+        document.querySelectorAll('.deleteBtn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            if(confirm('Voulez-vous vraiment supprimer cet utilisateur ?')){
+              const userId = btn.dataset.userid;
+              fetch('../../api/admin/delete_user.php', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({user_id: userId})
+              })
+              .then(res => res.json())
+              .then(result => {
+                if(result.success){
+                  alert('Utilisateur supprimé');
+                  loadUsers();
+                } else {
+                  alert('Erreur : ' + result.error);
+                }
+              });
+            }
+          });
+        });
+      }
+
+      // Déconnexion
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        fetch('../../api/auth/logout.php')
+          .then(() => window.location.href = 'admin-login.html');
+      });
+
+      loadUsers();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard Admin - Chathub</title>
+  <link rel="stylesheet" href="../../assets/css/admin.css" />
+</head>
+<body>
+  <aside class="sidebar">
+    <h2>Chathub Admin</h2>
+    <nav>
+      <ul>
+        <li><a href="dashboard.html" class="active">Tableau de bord</a></li>
+        <li><a href="users.html">Utilisateurs</a></li>
+        <li><a href="posts.html">Posts</a></li>
+        <li><a href="roles.html">Rôles</a></li>
+        <li><a href="#" id="logoutBtn">Déconnexion</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <header>
+      <h1>Tableau de bord</h1>
+    </header>
+
+    <section class="stats-cards">
+      <div class="card">
+        <h3>Utilisateurs</h3>
+        <p id="userCount">Chargement...</p>
+      </div>
+      <div class="card">
+        <h3>Posts</h3>
+        <p id="postCount">Chargement...</p>
+      </div>
+      <div class="card">
+        <h3>Commentaires</h3>
+        <p id="commentCount">Chargement...</p>
+      </div>
+      <div class="card">
+        <h3>Amis</h3>
+        <p id="friendCount">Chargement...</p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Fonction pour récupérer les stats depuis API admin/dashboard_stats.php
+      fetch('../../api/admin/dashboard_stats.php')
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            document.getElementById('userCount').textContent = data.stats.users;
+            document.getElementById('postCount').textContent = data.stats.posts;
+            document.getElementById('commentCount').textContent = data.stats.comments;
+            document.getElementById('friendCount').textContent = data.stats.friends;
+          } else {
+            alert('Erreur chargement stats : ' + data.error);
+          }
+        })
+        .catch(err => {
+          alert('Erreur réseau : ' + err.message);
+        });
+
+      // Gestion de la déconnexion
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        fetch('../../api/auth/logout.php')
+          .then(() => {
+            window.location.href = 'admin-login.html';
+          });
+      });
+    });
+  </script>
+</body>
+</html>

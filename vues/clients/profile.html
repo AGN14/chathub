@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Profil - ChatHub</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body>
+  <header>
+    <h1>Mon Profil</h1>
+    <button id="logoutBtn">Déconnexion</button>
+  </header>
+
+  <section>
+    <h2>Infos personnelles</h2>
+    <form id="profileForm">
+      <label>Prénom : <input type="text" name="first_name" required></label><br>
+      <label>Nom : <input type="text" name="last_name" required></label><br>
+      <label>Email : <input type="email" name="email" disabled></label><br>
+      <button type="submit">Mettre à jour</button>
+      <p id="profileMessage"></p>
+    </form>
+  </section>
+
+  <section>
+    <h2>Changer l’avatar</h2>
+    <img id="avatarPreview" src="../../uploads/avatars/default.png" alt="Avatar" width="100">
+    <form id="avatarForm" enctype="multipart/form-data">
+      <input type="file" name="avatar" accept="image/*" required>
+      <button type="submit">Mettre à jour l’avatar</button>
+      <p id="avatarMessage"></p>
+    </form>
+  </section>
+
+  <section>
+    <h2>Changer le mot de passe</h2>
+    <form id="passwordForm">
+      <label>Mot de passe actuel : <input type="password" name="current" required></label><br>
+      <label>Nouveau mot de passe : <input type="password" name="new" required></label><br>
+      <button type="submit">Modifier le mot de passe</button>
+      <p id="passwordMessage"></p>
+    </form>
+  </section>
+
+  <script src="../../assets/js/profile.js"></script>
+  <script src="../../assets/js/auth.js"></script>
+</body>
+</html>

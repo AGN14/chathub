@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Connexion - Chathub</title>
+  <link rel="stylesheet" href="../../assets/css/auth.css">
+</head>
+<body>
+  <div class="auth-container">
+    <div class="logo-container">
+      <div class="logo">
+        <div class="chat-bubble"></div>
+      </div>
+      <h1 class="logo-text">Chathub</h1>
+    </div>
+    
+    <h2>Bon retour parmi nous !</h2>
+    <form id="loginForm">
+      <input type="email" name="email" placeholder="Email" required>
+      <input type="password" name="password" placeholder="Mot de passe" required>
+      <button type="submit">Se connecter</button>
+    </form>
+    <p id="loginMessage"></p>
+    
+    <div class="auth-options">
+      <a href="http://localhost/chathub/vues/clients/login.html" class="forgot-password">Mot de passe oublié ?</a>
+    </div>
+    
+    <p class="auth-footer">Pas encore de compte ? <a href="register.html">Créer un compte</a></p>
+  </div>
+  <script src="../../assets/js/auth.js"></script>
+</body>
+</html>

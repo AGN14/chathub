@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Chat - Chathub</title>
+  <link rel="stylesheet" href="../../assets/css/chat.css" />
+</head>
+<body>
+  <header>
+    <h1>Messagerie</h1>
+    <button id="logoutBtn">Déconnexion</button>
+  </header>
+
+  <main class="chat-container">
+    <aside class="friends-list">
+      <h2>Contacts</h2>
+      <ul id="friendsList">
+        <!-- Liste des amis chargée dynamiquement -->
+      </ul>
+    </aside>
+
+    <section class="chat-window">
+      <div id="chatHeader">
+        <h2 id="chatWith">Sélectionnez un contact</h2>
+      </div>
+      <div id="messages" class="messages">
+        <!-- Messages chargés dynamiquement -->
+      </div>
+      <form id="messageForm">
+        <input type="text" id="messageInput" placeholder="Tapez votre message..." autocomplete="off" required />
+        <button type="submit">Envoyer</button>
+      </form>
+    </section>
+  </main>
+
+  <script src="../../assets/js/chat.js"></script>
+  <script src="../../assets/js/auth.js"></script>
+</body>
+</html>

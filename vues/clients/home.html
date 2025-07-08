@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Accueil - Chathub</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body>
+  <header>
+    <h1>Fil d'actualités</h1>
+    <button id="logoutBtn">Déconnexion</button>
+  </header>
+
+  <section id="sectionCreatePost">
+    <form id="createPostForm" enctype="multipart/form-data" method="POST" action="http://localhost/chathub/api/posts/create_post.php">
+      <textarea id="content" name="content" placeholder="Exprimez-vous..." required></textarea>
+      <input id="image" type="file" name="image" accept="image/*">
+      <button type="submit">Publier</button>
+      <p id="postMessage"></p>
+    </form>
+  </section>
+
+  <section id="feedContainer">
+    <!-- Les posts seront injectés ici dynamiquement -->
+  </section>
+
+  <script src="../../assets/js/feed.js"></script>
+  <script src="../../assets/js/auth.js"></script>
+</body>
+</html>

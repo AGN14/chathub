@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gestion des Posts - Chathub Admin</title>
+  <link rel="stylesheet" href="../../assets/css/admin.css" />
+</head>
+<body>
+  <aside class="sidebar">
+    <h2>Chathub Admin</h2>
+    <nav>
+      <ul>
+        <li><a href="dashboard.html">Tableau de bord</a></li>
+        <li><a href="users.html">Utilisateurs</a></li>
+        <li><a href="posts.html" class="active">Posts</a></li>
+        <li><a href="roles.html">Rôles</a></li>
+        <li><a href="#" id="logoutBtn">Déconnexion</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <header>
+      <h1>Liste des Posts</h1>
+    </header>
+
+    <section>
+      <table id="postsTable" border="1" cellpadding="10" cellspacing="0" style="width:100%; border-collapse: collapse;">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Utilisateur</th>
+            <th>Contenu</th>
+            <th>Image</th>
+            <th>Date de création</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Les posts seront chargés ici dynamiquement -->
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const postsTableBody = document.querySelector('#postsTable tbody');
+
+      function loadPosts() {
+        fetch('../../api/admin/get_posts.php')
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              postsTableBody.innerHTML = '';
+              data.posts.forEach(post => {
+                const tr = document.createElement('tr');
+
+                const imgCell = post.image ? `<img src="../../uploads/posts/${post.image}" alt="Post Image" width="80">` : '';
+
+                tr.innerHTML = `
+                  <td>${post.id}</td>
+                  <td>${post.first_name} ${post.last_name}</td>
+                  <td>${post.content ? post.content.substring(0, 50) + (post.content.length > 50 ? '...' : '') : ''}</td>
+                  <td>${imgCell}</td>
+                  <td>${new Date(post.created_at).toLocaleString()}</td>
+                  <td><button data-id="${post.id}" class="deleteBtn">Supprimer</button></td>
+                `;
+
+                postsTableBody.appendChild(tr);
+              });
+
+              // Ajouter les listeners sur les boutons supprimer
+              document.querySelectorAll('.deleteBtn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                  if (confirm('Voulez-vous vraiment supprimer ce post ?')) {
+                    const postId = btn.getAttribute('data-id');
+                    fetch('../../api/admin/delete_post.php', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ post_id: postId })
+                    })
+                      .then(res => res.json())
+                      .then(result => {
+                        if (result.success) {
+                          alert('Post supprimé avec succès');
+                          loadPosts();
+                        } else {
+                          alert('Erreur : ' + result.error);
+                        }
+                      });
+                  }
+                });
+              });
+            } else {
+              postsTableBody.innerHTML = '<tr><td colspan="6">Erreur lors du chargement des posts</td></tr>';
+            }
+          })
+          .catch(() => {
+            postsTableBody.innerHTML = '<tr><td colspan="6">Erreur réseau</td></tr>';
+          });
+      }
+
+      // Chargement initial
+      loadPosts();
+
+      // Gestion déconnexion
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        fetch('../../api/auth/logout.php')
+          .then(() => {
+            window.location.href = 'admin-login.html';
+          });
+      });
+    });
+  </script>
+</body>
+</html>
