@@ -60,17 +60,14 @@ try {
     // Hasher le mot de passe
     $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
-    // Générer token de vérification (optionnel)
-    $token = bin2hex(random_bytes(32));
-
-    // Insertion dans la base de données
+    // Insertion directe sans vérification email
     $stmt = $pdo->prepare("
         INSERT INTO users (
             first_name, last_name, username, email, password, phone, birth_date, gender, city, country,
-            bio, newsletter, avatar, is_verified, verification_token, created_at,
+            bio, newsletter, avatar, is_verified, created_at
         ) VALUES (
             :first_name, :last_name, :username, :email, :password, :phone, :birth_date, :gender, :city, :country,
-            :bio, :newsletter, 'default.png', 0, :token, NOW()
+            :bio, :newsletter, 'default.png', 1, NOW()
         )
     ");
 
@@ -86,11 +83,10 @@ try {
         ':city'       => $city,
         ':country'    => $country,
         ':bio'        => $bio,
-        ':newsletter' => $newsletter,
-        ':token'      => $token
+        ':newsletter' => $newsletter
     ]);
 
-    echo json_encode(['success' => true, 'message' => 'Inscription réussie !']);
+    echo json_encode(['success' => true, 'message' => 'Inscription réussie (sans vérification email) !']);
 } catch (Exception $e) {
     http_response_code(500);
     echo json_encode(['success' => false, 'error' => 'Erreur serveur : ' . $e->getMessage()]);

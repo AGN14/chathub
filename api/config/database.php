@@ -9,7 +9,7 @@ function getPDO() {
     $host = 'localhost';
     $db   = 'chathub_db';   // Nom de ta base de données
     $user = 'root';         // Nom d'utilisateur MySQL
-    $pass = '';             // Mot de passe (souvent vide sous XAMPP)
+    $pass = 'root';             
     $charset = 'utf8mb4';   // Charset pour le support UTF-8 étendu (émoticônes, etc.)
 
     // Chaîne de connexion DSN

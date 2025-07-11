@@ -7,25 +7,29 @@ document.addEventListener("DOMContentLoaded", () => {
   const friendsList = document.getElementById("friendsList");
 
   // Lister les utilisateurs
-  fetch("../../api/friends/get_users.php", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ user_id: user.id })
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.success) {
-      data.users.forEach(u => {
-        const div = document.createElement("div");
-        div.innerHTML = `
-          <strong>${u.first_name} ${u.last_name}</strong>
-          <button data-id="${u.id}">Ajouter</button>
-        `;
-        div.querySelector("button").addEventListener("click", () => sendRequest(u.id));
-        userList.appendChild(div);
-      });
-    }
-  });
+fetch("../../api/friends/get_users.php", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ user_id: user.id })
+})
+.then(res => res.json())
+.then(data => {
+  if (data.success) {
+    data.users.forEach(u => {
+      const div = document.createElement("div");
+      div.classList.add("user-card");  // ajout de la classe
+
+      div.innerHTML = `
+        <img src="../../uploads/avatars/${u.avatar || 'default.png'}" alt="Avatar de ${u.first_name}" class="user-avatar" />
+        <div class="user-info">${u.first_name} ${u.last_name}</div>
+        <button class="add-friend-btn" data-id="${u.id}">Ajouter</button>
+      `;
+
+      div.querySelector("button").addEventListener("click", () => sendRequest(u.id));
+      userList.appendChild(div);
+    });
+  }
+}); 
 
   // Envoyer une demande
   function sendRequest(receiverId) {

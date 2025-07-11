@@ -3,28 +3,80 @@
 <head>
   <meta charset="UTF-8">
   <title>Accueil - Chathub</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../../assets/css/style.css">
 </head>
 <body>
-  <header>
-    <h1>Fil d'actualités</h1>
-    <button id="logoutBtn">Déconnexion</button>
-  </header>
+  <!-- Sidebar -->
+  <aside class="sidebar" aria-label="Navigation latérale">
+    <div class="logo">Chathub</div>
 
-  <section id="sectionCreatePost">
-    <form id="createPostForm" enctype="multipart/form-data" method="POST" action="http://localhost/chathub/api/posts/create_post.php">
-      <textarea id="content" name="content" placeholder="Exprimez-vous..." required></textarea>
-      <input id="image" type="file" name="image" accept="image/*">
-      <button type="submit">Publier</button>
-      <p id="postMessage"></p>
-    </form>
-  </section>
+    <nav class="sidebar-nav">
+      <a href="home.html" class="active" aria-current="page">🏠 Accueil</a>
+      <a href="profile.html">👤 Profil</a>
+      <a href="messages.html">💬 Messages</a>
+      <a href="friends.html">👥 Amis</a>
+      <a href="settings.html">⚙️ Paramètres</a>
+      <a href="#" id="logoutBtn" class="logout">🚪 Déconnexion</a>
+    </nav>
 
-  <section id="feedContainer">
-    <!-- Les posts seront injectés ici dynamiquement -->
-  </section>
+    <div class="sidebar-user" role="contentinfo">
+      <img src="http://localhost/chathub/uploads/avatars/default-avatar.png" alt="Avatar utilisateur" class="avatar-small" id="sidebarUserAvatar">
+      <span id="sidebarUserName">Utilisateur</span>
+    </div>
+  </aside>
 
-  <script src="../../assets/js/feed.js"></script>
-  <script src="../../assets/js/auth.js"></script>
+  <!-- Contenu principal -->
+  <main class="main-content" role="main">
+    <!-- Section création de post -->
+    <section id="sectionCreatePost">
+      <form id="createPostForm" enctype="multipart/form-data" method="POST" action="http://localhost/chathub/api/posts/create_post.php">
+        <textarea id="content" name="content" placeholder="Exprimez-vous..." required></textarea>
+
+        <div class="file-input-wrapper">
+          <input id="image" type="file" name="image" accept="image/*" />
+          <label for="image" class="file-input-label">📷 Ajouter une image</label>
+        </div>
+
+        <button type="submit" class="submit-btn">Publier</button>
+        <p id="postMessage" role="alert"></p>
+      </form>
+    </section>
+
+    <!-- Fil d’actualités -->
+    <section id="feedContainer" aria-live="polite" aria-busy="true">
+      <div class="loading">Chargement des publications...</div>
+    </section>
+  </main>
+
+  <!-- Templates des posts (remplis dynamiquement par feed.js) -->
+  <template id="postTemplate">
+    <article class="post-card">
+      <header class="post-header">
+        <img src="" alt="Avatar" class="avatar-small post-avatar">
+        <div>
+          <h3 class="post-author">Nom utilisateur</h3>
+          <time class="post-date">Il y a X minutes</time>
+        </div>
+      </header>
+
+      <p class="post-content">Contenu du post...</p>
+
+      <!-- Bloc image stylé -->
+      <div class="media-container ratio-square"> <!-- Utilise ratio-square par défaut -->
+        <img src="" alt="Image du post" class="post-image" loading="lazy">
+      </div>
+
+      <footer class="post-footer">
+        <button class="like-btn">❤️ J’aime</button>
+        <button class="comment-btn">💬 Commenter</button>
+      </footer>
+    </article>
+  </template>
+
+  <!-- Scripts JS -->
+  <script src="../../assets/js/sidebar.js" defer></script>
+  <script src="../../assets/js/feed.js" defer></script>
+  <script src="../../assets/js/auth.js" defer></script>
 </body>
 </html>

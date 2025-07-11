@@ -25,13 +25,13 @@ function sendEmail(string $to, string $subject, string $body, ?string $altBody =
         $mail->isSMTP();
         $mail->Host       = 'smtp.gmail.com';          // Serveur SMTP (ex: Gmail)
         $mail->SMTPAuth   = true;
-        $mail->Username   = 'abfoulmed645@gmail.com';     // Ton adresse Gmail SMTP
-        $mail->Password   = 'cbqe krjn kbup suay';    // Ton mot de passe d'application Gmail
+        $mail->Username   = 'arnoldomolola@gmail.com';     // Ton adresse Gmail SMTP
+        $mail->Password   = 'fpyz acmx dxfq dbkw';    // Ton mot de passe d'application Gmail
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; // Utilisation SSL
         $mail->Port       = 465;
 
         // Expéditeur
-        $mail->setFrom('abfoulmed645@gmail.com', 'Chathub');
+        $mail->setFrom('arnoldomolola@gmail.com', 'Chathub');
 
         // Destinataire
         $mail->addAddress($to);

@@ -24,8 +24,8 @@ try {
 
     $password = $input['password'];
 
-    // Chercher utilisateur
-    $stmt = $pdo->prepare("SELECT id, first_name, last_name, email, password, avatar, is_verified FROM users WHERE email = :email");
+    // Chercher utilisateur (sans is_verified)
+    $stmt = $pdo->prepare("SELECT id, first_name, last_name, email, password, avatar FROM users WHERE email = :email");
     $stmt->execute([':email' => $email]);
     $user = $stmt->fetch();
 
@@ -39,12 +39,6 @@ try {
     if (!password_verify($password, $user['password'])) {
         http_response_code(401);
         echo json_encode(['success' => false, 'error' => 'Email ou mot de passe incorrect']);
-        exit;
-    }
-
-    // Optionnel : vérifier si email vérifié
-    if ($user['is_verified'] == 0) {
-        echo json_encode(['success' => false, 'error' => 'Compte non vérifié. Vérifiez votre email.']);
         exit;
     }
 
